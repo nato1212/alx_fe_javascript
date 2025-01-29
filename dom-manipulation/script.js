@@ -132,9 +132,9 @@ document.addEventListener("DOMContentLoaded", () => {
   filterQuotes();
 });
 
-const API_URL = "https://jsonplaceholder.typicode.com/posts"; // Replace with actual API if needed
+const API_URL = "https://jsonplaceholder.typicode.com/posts"; // Mock API URL
 
-async function fetchServerQuotes() {
+async function fetchQuotesFromServer() {
   try {
     const response = await fetch(API_URL);
     const serverQuotes = await response.json();
@@ -151,6 +151,7 @@ async function fetchServerQuotes() {
   }
 }
 
+// Sync Quotes Function
 function syncQuotes(serverQuotes) {
   let localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
 
@@ -167,8 +168,7 @@ function syncQuotes(serverQuotes) {
   notifyUser("Quotes synced with server!");
 }
 
-setInterval(fetchServerQuotes, 30000); // Fetch new quotes every 30 seconds
-
+// User Notification
 function notifyUser(message) {
   const notification = document.createElement("div");
   notification.innerText = message;
@@ -187,10 +187,5 @@ function notifyUser(message) {
   }, 3000);
 }
 
-function resolveConflict(localQuote, serverQuote) {
-  const userChoice = confirm(`Conflict detected! Choose a quote to keep:\n
-    1. Local: "${localQuote.text}"\n
-    2. Server: "${serverQuote.text}"`);
-
-  return userChoice ? serverQuote : localQuote;
-}
+// Automatically Fetch & Sync Every 30 Seconds
+setInterval(fetchQuotesFromServer, 30000);
