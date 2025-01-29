@@ -43,19 +43,6 @@ function restoreLastQuote() {
   }
 }
 
-// Function to create and insert the quote input form dynamically
-function createAddQuoteForm() {
-  const formContainer = document.createElement("div");
-  formContainer.innerHTML = `
-        <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
-        <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
-        <button onclick="addQuote()">Add Quote</button>
-        <button onclick="exportQuotes()">Export Quotes (JSON)</button>
-        <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
-    `;
-  document.body.appendChild(formContainer);
-}
-
 // Function to add a new quote
 function addQuote() {
   const quoteText = document.getElementById("newQuoteText").value.trim();
@@ -107,12 +94,16 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
-// Event listener for showing a random quote
+// Event Listeners
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+document.getElementById("addQuote").addEventListener("click", addQuote);
+document.getElementById("exportQuotes").addEventListener("click", exportQuotes);
+document
+  .getElementById("importFile")
+  .addEventListener("change", importFromJsonFile);
 
 // Restore last displayed quote
 document.addEventListener("DOMContentLoaded", () => {
   restoreLastQuote();
-  createAddQuoteForm();
   showRandomQuote();
 });
