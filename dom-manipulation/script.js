@@ -53,11 +53,16 @@ function filterQuotes() {
   const quoteDisplay = document.getElementById("quoteDisplay");
   quoteDisplay.innerHTML = ""; // Clear previous quotes
 
-  filteredQuotes.forEach((quote) => {
+  if (filteredQuotes.length > 0) {
+    // Pick a random quote from the filtered list
+    const randomQuote =
+      filteredQuotes[Math.floor(Math.random() * filteredQuotes.length)];
     const quoteElement = document.createElement("div");
-    quoteElement.innerHTML = `<p>"${quote.text}"</p><small>Category: ${quote.category}</small>`;
+    quoteElement.innerHTML = `<p>"${randomQuote.text}"</p><small>Category: ${randomQuote.category}</small>`;
     quoteDisplay.appendChild(quoteElement);
-  });
+  } else {
+    quoteDisplay.innerHTML = "<p>No quotes found for this category.</p>";
+  }
 }
 
 // Function to add a new quote
