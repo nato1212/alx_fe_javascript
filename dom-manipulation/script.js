@@ -134,6 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const API_URL = "https://jsonplaceholder.typicode.com/posts"; // Mock API URL
 
+// Function to fetch quotes from the server
 async function fetchQuotesFromServer() {
   try {
     const response = await fetch(API_URL);
@@ -151,7 +152,7 @@ async function fetchQuotesFromServer() {
   }
 }
 
-// Sync Quotes Function
+// Function to sync quotes (store in local storage and notify user)
 function syncQuotes(serverQuotes) {
   let localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
 
@@ -168,7 +169,38 @@ function syncQuotes(serverQuotes) {
   notifyUser("Quotes synced with server!");
 }
 
-// User Notification
+// Function to post a new quote to the server (using POST method)
+async function postQuoteToServer(quote) {
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST", // HTTP method
+      headers: {
+        "Content-Type": "application/json", // Set content type to JSON
+      },
+      body: JSON.stringify(quote), // Post the quote as JSON
+    });
+
+    const data = await response.json();
+    console.log("Quote posted successfully:", data);
+    notifyUser("Quote posted to server!");
+  } catch (error) {
+    console.error("Error posting quote:", error);
+    notifyUser("Failed to post quote.");
+  }
+}
+
+// Function to handle new quote submission
+function addNewQuote() {
+  const newQuote = {
+    text: "This is a new quote!", // Example quote text
+    category: "Motivation", // Example category
+  };
+
+  // Post the new quote to the server
+  postQuoteToServer(newQuote);
+}
+
+// Notification function
 function notifyUser(message) {
   const notification = document.createElement("div");
   notification.innerText = message;
@@ -187,5 +219,8 @@ function notifyUser(message) {
   }, 3000);
 }
 
-// Automatically Fetch & Sync Every 30 Seconds
+// Automatically fetch quotes every 30 seconds
 setInterval(fetchQuotesFromServer, 30000);
+
+// Example of posting a new quote to the server after 5 seconds
+setTimeout(addNewQuote, 5000);
