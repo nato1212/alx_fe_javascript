@@ -131,3 +131,66 @@ document.addEventListener("DOMContentLoaded", () => {
   populateCategories();
   filterQuotes();
 });
+
+const API_URL = "https://jsonplaceholder.typicode.com/posts"; // Replace with actual API if needed
+
+async function fetchServerQuotes() {
+  try {
+    const response = await fetch(API_URL);
+    const serverQuotes = await response.json();
+
+    // Convert API response to match our quote format
+    const formattedQuotes = serverQuotes.map((item) => ({
+      text: item.title, // Assuming title is the quote
+      category: "General", // Default category
+    }));
+
+    syncQuotes(formattedQuotes);
+  } catch (error) {
+    console.error("Error fetching server quotes:", error);
+  }
+}
+
+function syncQuotes(serverQuotes) {
+  let localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
+
+  // Filter out duplicates (assuming text uniqueness)
+  serverQuotes.forEach((serverQuote) => {
+    if (
+      !localQuotes.some((localQuote) => localQuote.text === serverQuote.text)
+    ) {
+      localQuotes.push(serverQuote);
+    }
+  });
+
+  localStorage.setItem("quotes", JSON.stringify(localQuotes));
+  notifyUser("Quotes synced with server!");
+}
+
+setInterval(fetchServerQuotes, 30000); // Fetch new quotes every 30 seconds
+
+function notifyUser(message) {
+  const notification = document.createElement("div");
+  notification.innerText = message;
+  notification.style.position = "fixed";
+  notification.style.bottom = "10px";
+  notification.style.right = "10px";
+  notification.style.padding = "10px";
+  notification.style.background = "green";
+  notification.style.color = "white";
+  notification.style.borderRadius = "5px";
+
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    notification.remove();
+  }, 3000);
+}
+
+function resolveConflict(localQuote, serverQuote) {
+  const userChoice = confirm(`Conflict detected! Choose a quote to keep:\n
+    1. Local: "${localQuote.text}"\n
+    2. Server: "${serverQuote.text}"`);
+
+  return userChoice ? serverQuote : localQuote;
+}
