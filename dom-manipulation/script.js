@@ -18,10 +18,15 @@ function showRandomQuote() {
   const randomIndex = Math.floor(Math.random() * quotes.length);
   const quoteDisplay = document.getElementById("quoteDisplay");
 
-  quoteDisplay.textContent = `"${quotes[randomIndex].text}" - ${quotes[randomIndex].category}`;
+  // Ensure the quoteDisplay exists before modifying it
+  if (quoteDisplay) {
+    quoteDisplay.textContent = `"${quotes[randomIndex].text}" - ${quotes[randomIndex].category}`;
+  } else {
+    console.error("Element with id 'quoteDisplay' not found.");
+  }
 }
 
-// Function to add new quote
+// Function to add a new quote
 function addQuote() {
   const quoteText = document.getElementById("newQuoteText").value.trim();
   const quoteCategory = document
@@ -40,4 +45,4 @@ function addQuote() {
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
 
 // Show a random quote on page load
-showRandomQuote();
+document.addEventListener("DOMContentLoaded", showRandomQuote);
